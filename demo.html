@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Grapher | 1080p Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --text: #f8fafc;
+            --accent: #38bdf8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden; /* Prevents awkward scrolling */
+        }
+
+        /* LEFT SIDE: Controls */
+        .sidebar {
+            width: 400px;
+            background-color: var(--panel);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+            box-shadow: 10px 0 15px rgba(0,0,0,0.2);
+        }
+
+        h2 { margin-top: 0; color: var(--accent); }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover { background: var(--accent); color: var(--bg); }
+        button.active { background: var(--accent); color: var(--bg); border-color: white; }
+
+        textarea {
+            flex-grow: 1;
+            background: #0f172a;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus { border-color: var(--accent); }
+
+        /* RIGHT SIDE: The Graph */
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 600px; /* Optimized for 1080p height */
+            background: var(--panel);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+        }
+
+        .download-btn {
+            margin-top: 20px;
+            background: #10b981;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>📊 CHART ENGINE</h2>
+        <p>1. Select Style:</p>
+        <div class="btn-group">
+            <button onclick="changeType(this, 'bar')" class="active">BAR</button>
+            <button onclick="changeType(this, 'line')">LINE</button>
+            <button onclick="changeType(this, 'pie')">PIE</button>
+            <button onclick="changeType(this, 'doughnut')">DONUT</button>
+            <button onclick="changeType(this, 'radar')">RADAR</button>
+            <button onclick="changeType(this, 'polarArea')">POLAR</button>
+        </div>
+
+        <p>2. Paste CSV Data:</p>
+        <textarea id="dataInput" oninput="update()">Label,Value
+Revenue,4500
+Marketing,2800
+Research,1500
+Support,3200
+Server,900</textarea>
+
+        <button class="download-btn" onclick="download()">⬇️ DOWNLOAD PNG</button>
+    </div>
+
+    <div class="main-content">
+        <div class="chart-container">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+        let currentType = 'bar';
+
+        function update() {
+            const text = document.getElementById('dataInput').value;
+            const lines = text.trim().split('\n');
+            const labels = [];
+            const data = [];
+
+            // Simple CSV parser
+            lines.slice(1).forEach(row => {
+                const parts = row.split(',');
+                if(parts.length >= 2) {
+                    labels.push(parts[0].trim());
+                    data.push(parseFloat(parts[1].trim()));
+                }
+            });
+
+            const ctx = document.getElementById('canvas').getContext('2d');
+            
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: currentType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Data Set 1',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(56, 189, 248, 0.6)',
+                            'rgba(168, 85, 247, 0.6)',
+                            'rgba(236, 72, 153, 0.6)',
+                            'rgba(245, 158, 11, 0.6)',
+                            'rgba(16, 185, 129, 0.6)'
+                        ],
+                        borderColor: varColor('--accent'),
+                        borderWidth: 2,
+                        tension: 0.3 // Smooth lines
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#f8fafc' } }
+                    },
+                    scales: currentType === 'pie' || currentType === 'doughnut' || currentType === 'polarArea' ? {} : {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    }
+                }
+            });
+        }
+
+        function changeType(btn, type) {
+            document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentType = type;
+            update();
+        }
+
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name);
+        }
+
+        function download() {
+            const link = document.createElement('a');
+            link.download = 'chart.png';
+            link.href = document.getElementById('canvas').toDataURL('image/png');
+            link.click();
+        }
+
+        // Run on load
+        update();
+    </script>
+</body>
+</html>
