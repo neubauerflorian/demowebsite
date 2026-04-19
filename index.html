@@ -63,11 +63,23 @@ flex-grow: 1;
 background: #0f172a;
 color: #94a3b8;
 border: 1px solid #475569;
-border-radius: 8px;
+border-radius: 0 0 8px 8px;
 padding: 1rem;
 font-family: 'Courier New', monospace;
 resize: none;
 outline: none;
+}
+
+.csv-header {
+background: #0f172a;
+color: var(--accent);
+padding: 8px 1rem;
+border: 1px solid #475569;
+border-bottom: none;
+border-radius: 8px 8px 0 0;
+font-family: 'Courier New', monospace;
+font-size: 0.9rem;
+font-weight: bold;
 }
 
 textarea:focus { border-color: var(--accent); }
@@ -114,8 +126,8 @@ width: 100%;
 </div>
 
 <p>2. Paste CSV Data:</p>
-<textarea id="dataInput" oninput="update()">Label,Value
-Revenue,4500
+<div class="csv-header">Label, Value</div>
+<textarea id="dataInput" oninput="update()">Revenue,4500
 Marketing,2800
 Research,1500
 Support,3200
@@ -141,7 +153,7 @@ const labels = [];
 const data = [];
 
 // Simple CSV parser
-lines.slice(1).forEach(row => {
+lines.forEach(row => {
 const parts = row.split(',');
 if(parts.length >= 2) {
 labels.push(parts[0].trim());
@@ -207,10 +219,5 @@ link.click();
 // Run on load
 update();
 </script>
-</body>
-</html>
-update();
-</script>
-
 </body>
 </html>
