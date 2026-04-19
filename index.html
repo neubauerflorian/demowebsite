@@ -1,211 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Grapher | 1080p Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text: #f8fafc;
-            --accent: #38bdf8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Grapher | Trial-Grade Dashboard</title>
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            display: flex;
-            overflow: hidden; /* Prevents awkward scrolling */
-        }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        /* LEFT SIDE: Controls */
-        .sidebar {
-            width: 400px;
-            background-color: var(--panel);
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #334155;
-            box-shadow: 10px 0 15px rgba(0,0,0,0.2);
-        }
+<style>
+:root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --text: #f8fafc;
+    --accent: #38bdf8;
+}
 
-        h2 { margin-top: 0; color: var(--accent); }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+}
 
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+.sidebar {
+    width: 400px;
+    background: var(--panel);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #334155;
+}
 
-        button {
-            padding: 12px;
-            background: #334155;
-            border: 1px solid #475569;
-            color: white;
-            cursor: pointer;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
+h2 { color: var(--accent); margin-top: 0; }
 
-        button:hover { background: var(--accent); color: var(--bg); }
-        button.active { background: var(--accent); color: var(--bg); border-color: white; }
+.btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
 
-        textarea {
-            flex-grow: 1;
-            background: #0f172a;
-            color: #94a3b8;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            resize: none;
-            outline: none;
-        }
+button {
+    padding: 10px;
+    background: #334155;
+    border: 1px solid #475569;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-        textarea:focus { border-color: var(--accent); }
+button.active,
+button:hover {
+    background: var(--accent);
+    color: black;
+}
 
-        /* RIGHT SIDE: The Graph */
-        .main-content {
-            flex-grow: 1;
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+textarea {
+    flex-grow: 1;
+    margin-top: 10px;
+    background: #0f172a;
+    color: #94a3b8;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: monospace;
+}
 
-        .chart-container {
-            width: 100%;
-            max-width: 1000px;
-            height: 600px; /* Optimized for 1080p height */
-            background: var(--panel);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
-        }
+.main {
+    flex-grow: 1;
+    padding: 2rem;
+}
 
-        .download-btn {
-            margin-top: 20px;
-            background: #10b981;
-            width: 100%;
-        }
-    </style>
+.chart-container {
+    height: 600px;
+    background: var(--panel);
+    padding: 1rem;
+    border-radius: 10px;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="sidebar">
-        <h2>📊 CHART ENGINE</h2>
-        <p>1. Select Style:</p>
-        <div class="btn-group">
-            <button onclick="changeType(this, 'bar')" class="active">BAR</button>
-            <button onclick="changeType(this, 'line')">LINE</button>
-            <button onclick="changeType(this, 'pie')">PIE</button>
-            <button onclick="changeType(this, 'doughnut')">DONUT</button>
-            <button onclick="changeType(this, 'radar')">RADAR</button>
-            <button onclick="changeType(this, 'polarArea')">POLAR</button>
-        </div>
+<div class="sidebar">
+    <h2>📊 TRIAL GRAPHER</h2>
 
-        <p>2. Paste CSV Data:</p>
-        <textarea id="dataInput" oninput="update()">Label,Value
-Revenue,4500
-Marketing,2800
-Research,1500
-Support,3200
-Server,900</textarea>
-
-        <button class="download-btn" onclick="download()">⬇️ DOWNLOAD PNG</button>
+    <div class="btn-group">
+        <button onclick="changeType(this,'line')" class="active">LINE</button>
+        <button onclick="changeType(this,'bar')">BAR</button>
+        <button onclick="changeType(this,'pie')">PIE</button>
+        <button onclick="changeType(this,'doughnut')">DONUT</button>
     </div>
 
-    <div class="main-content">
-        <div class="chart-container">
-            <canvas id="canvas"></canvas>
-        </div>
+    <p>CSV Input:</p>
+
+<textarea id="dataInput" oninput="update()">
+Time,Placebo,Drug A,Drug B
+0,0,0,0
+7,12,18,22
+14,20,35,40
+</textarea>
+
+    <button onclick="download()">⬇️ Download PNG</button>
+</div>
+
+<div class="main">
+    <div class="chart-container">
+        <canvas id="canvas"></canvas>
     </div>
+</div>
 
-    <script>
-        let chart;
-        let currentType = 'bar';
+<script>
+let chart;
+let currentType = 'line';
 
-        function update() {
-            const text = document.getElementById('dataInput').value;
-            const lines = text.trim().split('\n');
-            const labels = [];
-            const data = [];
+function parseCSV(text) {
+    const rows = text.trim().split('\n').map(r => r.split(',').map(c => c.trim()));
+    return {
+        headers: rows[0],
+        body: rows.slice(1)
+    };
+}
 
-            // Simple CSV parser
-            lines.slice(1).forEach(row => {
-                const parts = row.split(',');
-                if(parts.length >= 2) {
-                    labels.push(parts[0].trim());
-                    data.push(parseFloat(parts[1].trim()));
-                }
-            });
+function buildDatasets(headers, body) {
 
-            const ctx = document.getElementById('canvas').getContext('2d');
-            
-            if (chart) chart.destroy();
+    // Detect Mean + Error format
+    if (headers.length === 3 && headers[1].toLowerCase() === 'mean') {
+        return [{
+            label: 'Mean',
+            data: body.map(r => +r[1]),
+            error: body.map(r => +r[2])
+        }];
+    }
 
-            chart = new Chart(ctx, {
-                type: currentType,
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Data Set 1',
-                        data: data,
-                        backgroundColor: [
-                            'rgba(56, 189, 248, 0.6)',
-                            'rgba(168, 85, 247, 0.6)',
-                            'rgba(236, 72, 153, 0.6)',
-                            'rgba(245, 158, 11, 0.6)',
-                            'rgba(16, 185, 129, 0.6)'
-                        ],
-                        borderColor: varColor('--accent'),
-                        borderWidth: 2,
-                        tension: 0.3 // Smooth lines
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#f8fafc' } }
-                    },
-                    scales: currentType === 'pie' || currentType === 'doughnut' || currentType === 'polarArea' ? {} : {
-                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+    // Multi-arm
+    return headers.slice(1).map((h, i) => ({
+        label: h,
+        data: body.map(r => +r[i + 1])
+    }));
+}
+
+function getLabels(body) {
+    return body.map(r => r[0]);
+}
+
+function color(i) {
+    const palette = [
+        '#38bdf8','#a855f7','#ec4899',
+        '#f59e0b','#10b981','#ef4444'
+    ];
+    return palette[i % palette.length];
+}
+
+function update() {
+
+    const text = document.getElementById('dataInput').value;
+    const { headers, body } = parseCSV(text);
+
+    const labels = getLabels(body);
+    const raw = buildDatasets(headers, body);
+
+    const datasets = raw.map((d,i)=>({
+        label: d.label,
+        data: d.data,
+        borderColor: color(i),
+        backgroundColor: color(i)+'66',
+        tension: 0.3,
+        borderWidth: 2
+    }));
+
+    const ctx = document.getElementById('canvas').getContext('2d');
+    if(chart) chart.destroy();
+
+    chart = new Chart(ctx,{
+        type: currentType,
+        data:{ labels, datasets },
+        options:{
+            responsive:true,
+            plugins:{
+                legend:{ labels:{ color:'#fff' }},
+                tooltip:{
+                    callbacks:{
+                        label:(ctx)=>{
+                            const d = raw[ctx.datasetIndex];
+                            const val = ctx.raw;
+                            if(d.error){
+                                return `${ctx.dataset.label}: ${val} ± ${d.error[ctx.dataIndex]}`;
+                            }
+                            return `${ctx.dataset.label}: ${val}`;
+                        }
                     }
                 }
-            });
-        }
+            },
+            scales: ['pie','doughnut'].includes(currentType) ? {} : {
+                x:{ ticks:{color:'#aaa'} },
+                y:{ ticks:{color:'#aaa'} }
+            }
+        },
+        plugins:[{
+            id:'errorBars',
+            afterDatasetsDraw(chart){
+                const ctx = chart.ctx;
 
-        function changeType(btn, type) {
-            document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentType = type;
-            update();
-        }
+                chart.data.datasets.forEach((ds,i)=>{
+                    const meta = chart.getDatasetMeta(i);
+                    const d = raw[i];
+                    if(!d.error) return;
 
-        function varColor(name) {
-            return getComputedStyle(document.documentElement).getPropertyValue(name);
-        }
+                    meta.data.forEach((point,idx)=>{
+                        const err = d.error[idx];
+                        const y = chart.scales.y;
 
-        function download() {
-            const link = document.createElement('a');
-            link.download = 'chart.png';
-            link.href = document.getElementById('canvas').toDataURL('image/png');
-            link.click();
-        }
+                        const top = y.getPixelForValue(ds.data[idx]+err);
+                        const bot = y.getPixelForValue(ds.data[idx]-err);
 
-        // Run on load
-        update();
-    </script>
+                        ctx.beginPath();
+                        ctx.moveTo(point.x,top);
+                        ctx.lineTo(point.x,bot);
+                        ctx.strokeStyle = ds.borderColor;
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.moveTo(point.x-5,top);
+                        ctx.lineTo(point.x+5,top);
+                        ctx.moveTo(point.x-5,bot);
+                        ctx.lineTo(point.x+5,bot);
+                        ctx.stroke();
+                    });
+                });
+            }
+        }]
+    });
+}
+
+function changeType(btn,type){
+    document.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = type;
+    update();
+}
+
+function download(){
+    const a = document.createElement('a');
+    a.href = document.getElementById('canvas').toDataURL();
+    a.download = 'chart.png';
+    a.click();
+}
+
+update();
+</script>
+
 </body>
 </html>
